@@ -1,13 +1,17 @@
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Movie {
 	
 	final private String path;
 	final private Formats format;
 	private Status status;
-	private Information<?, ?> info;
+	
+	final private String title;
+	final private String language;
+	final private String studio;
+	private HashMap<String, String> custom;
+	private static boolean ifNotCreated = true;
 	
 	public Movie(String inputPath, String inputTitle, String inputLanguage, String inputStudio) {
 		//check if the input file with acceptable formats
@@ -48,19 +52,25 @@ public class Movie {
 		}
 		
 		//Initialize the info
-		Information<?, ?> inputInfo = new Information(inputTitle, inputLanguage, inputStudio);
-		this.info = inputInfo;
+		this.title = inputTitle;
+		this.language = inputLanguage;
+		this.studio = inputStudio;
 	}
 	
-	//to Copy a movie object
+	//to Deeply Copy a movie object(copy the information object meanwhile)
 	public Movie(Movie m) {
 		this.path = m.path;
 		this.format = m.format;
 		this.status = m.status;
-		Information<?, ?> newInfo = new Information(m.info);
-		this.info = newInfo;
+		this.title = m.title;
+		this.language = m.language;
+		this.studio = m.studio;
+		this.custom = new HashMap<String, String>(m.custom);
 	}
 	
+	public Status getValidity() {
+		return this.status;
+	}
 	
 	//Update the status of the movie, to check if the file exists or not
 	public void updateStatus() {
@@ -71,6 +81,30 @@ public class Movie {
 		else {
 			this.status = Status.Invalid;
 		}
+	}
+	
+	//Getters for the information
+	public String getTitle() {
+		return this.title;
+	}
+	public String getLanguage() {
+		return this.language;
+	}
+	public String getStudio() {
+		return this.studio;
+	}
+	public void addPair(String key, String value) {
+		if(ifNotCreated) {
+			ifNotCreated = false;
+			this.custom = new HashMap<String, String>();
+		}
+		this.custom.put(key, value);
+	}
+	public void removePair(String key) {
+		this.custom.remove(key);
+	}
+	public void modifyPair(String key, String changed) {
+		this.custom.replace(key, changed);
 	}
 	
 }
