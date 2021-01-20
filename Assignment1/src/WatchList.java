@@ -31,11 +31,13 @@ public class WatchList{
 	}
 	
 	//Make a copy, so the client only able to access the information, but not to the reference
-	public Queue<Movie> accessAll(){
-		Queue<Movie> all = new LinkedList<Movie>();
+	public Movie[] accessAll(){
+		int index = 0;
+		Movie[] all = new Movie[this.watchList.size()];
 		for(Movie m : this.watchList) {
 			Movie copy = new Movie(m);
-			all.add(copy);
+			all[index] = copy;
+			index ++;
 		}
 		return all;
 	}

@@ -11,7 +11,6 @@ public class Movie {
 	final private String language;
 	final private String studio;
 	private HashMap<String, String> custom;
-	private static boolean ifNotCreated = true;
 	
 	public Movie(String inputPath, String inputTitle, String inputLanguage, String inputStudio) {
 		//check if the input file with acceptable formats
@@ -55,6 +54,7 @@ public class Movie {
 		this.title = inputTitle;
 		this.language = inputLanguage;
 		this.studio = inputStudio;
+		this.custom = new HashMap<String, String>();
 	}
 	
 	//to Deeply Copy a movie object(copy the information object meanwhile)
@@ -68,8 +68,16 @@ public class Movie {
 		this.custom = new HashMap<String, String>(m.custom);
 	}
 	
+	public String toString() {
+		return this.title;
+	}
+	
 	public Status getValidity() {
 		return this.status;
+	}
+	
+	public Formats getFormat() {
+		return this.format;
 	}
 	
 	//Update the status of the movie, to check if the file exists or not
@@ -94,10 +102,6 @@ public class Movie {
 		return this.studio;
 	}
 	public void addPair(String key, String value) {
-		if(ifNotCreated) {
-			ifNotCreated = false;
-			this.custom = new HashMap<String, String>();
-		}
 		this.custom.put(key, value);
 	}
 	public void removePair(String key) {
