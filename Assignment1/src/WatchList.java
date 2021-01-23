@@ -1,43 +1,75 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class WatchList{
 	private String name;
-	private Queue<Movie> watchList;
+	private LinkedList<Movie> watchList;
+	//to store the name has used, to avoid the duplicates
+	static private ArrayList<String> nameList = new ArrayList<String>();
 	
 	public WatchList(String inputName) {
-		this.setName(inputName);
-		Queue<Movie> list =  new LinkedList<Movie>();
+		//The watch list is identified by name, so the name cannot be same
+		for(String name : nameList) {
+			if(name.equals(inputName)) {
+				//raise an error if the name has already existed
+				throw new AssertionError("Error: The name has existed already, Please change another name");
+			}
+		}
+		this.name  = inputName;
+		nameList.add(inputName);
+		LinkedList<Movie> list =  new LinkedList<Movie>();
 		this.watchList = list;
 	}
 	
+	//Getter and Setter for the name
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String newName) {
+		for(String name : nameList) {
+			if(name.equals(newName)) {
+				//raise an error if the name has already existed
+				throw new AssertionError("Error: The name has existed already, Please change another name");
+			}
+		}
+		nameList.remove(this.name);
 		this.name = newName;
+		nameList.add(newName);
 	}
 
+	//Do not need copy here, since if the Client change the movie globally, 
+	//the movie in the watch list should be changed simultaneously
 	public void add(Movie toWatch) {
-		//avoid the reference escaping, so copy a movie object
-		Movie toAdd = new Movie(toWatch);
-		this.watchList.add(toAdd);
+		for(Movie m : this.watchList) {
+			if(m.ifSame(toWatch)) {
+				//raise an error if the movie with same information has already in the watch list
+				throw new AssertionError("Error: The movie has already in the list");
+			}
+		}
+		this.watchList.add(toWatch);
 	}
 	
 	public void watchOne() {
-		this.watchList.remove();
+		Movie m = this.watchList.getFirst();
+		//raise an error if the movie to play is not valid
+		if(m.getValidity().equals(Status.Valid)) {
+			this.watchList.removeFirst();
+		}
+		else {
+			throw new AssertionError("Error: The movie you want to watch cannot be found");
+		}
 	}
 	
-	//Make a copy, so the client only able to access the information, but not to the reference
-	public Movie[] accessAll(){
-		int index = 0;
-		Movie[] all = new Movie[this.watchList.size()];
+	/*
+	 * Make a copy, so the client only able to access the information, but not to the reference
+	 * The client will not be able to change the info of movie by a watch list
+	 */
+	public ArrayList<Movie> accessAll(){
+		ArrayList<Movie> all = new ArrayList<Movie>();
 		for(Movie m : this.watchList) {
 			Movie copy = new Movie(m);
-			all[index] = copy;
-			index ++;
+			all.add(copy);
 		}
 		return all;
 	}
@@ -52,8 +84,7 @@ public class WatchList{
 		return num;
 	}
 	
-	//Use array as a list, since the array is immutable
-	public String[] allStudios() {
+	public ArrayList<String> allStudios() {
 		ArrayList<String> list = new ArrayList<String>();
 		for(Movie m : this.watchList) {
 			String s = m.getStudio();
@@ -61,26 +92,18 @@ public class WatchList{
 				list.add(s);
 			}
 		}
-		String[] studios = new String[list.size()];
-		for(int i = 0; i < studios.length; i ++) {
-			studios[i] = list.get(i);
-		}
-		return studios;
+		return list;
 	}
 	
-	public String[] allLanguages() {
+	public ArrayList<String> allLanguages() {
 		ArrayList<String> list = new ArrayList<String>();
 		for(Movie m : this.watchList) {
-			String s = m.getLanguage();
-			if(!list.contains(s)) {
-				list.add(s);
+			String l = m.getLanguage();
+			if(!list.contains(l)) {
+				list.add(l);
 			}
 		}
-		String[] languages = new String[list.size()];
-		for(int i = 0; i < languages.length; i ++) {
-			languages[i] = list.get(i);
-		}
-		return languages;
+		return list;
 	}
 }
 	

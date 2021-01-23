@@ -1,7 +1,7 @@
 import java.io.File;
 import java.util.HashMap;
 
-public class Movie {
+public class Movie{
 	
 	final private String path;
 	final private Formats format;
@@ -10,6 +10,11 @@ public class Movie {
 	final private String title;
 	final private String language;
 	final private String studio;
+	/*
+	 * Use HashMap to store the key-value pairs
+	 * Choose the type String, since String is general enough to store any information
+	 * like name, length, or anything related to the movie
+	 */
 	private HashMap<String, String> custom;
 	
 	public Movie(String inputPath, String inputTitle, String inputLanguage, String inputStudio) {
@@ -35,12 +40,10 @@ public class Movie {
 				this.format = Formats.MKV;
 				break;
 			default:
-				throw new AssertionError("Your input path is not matched with any acceptable path");
+				//Raise an error if the format is not acceptable
+				throw new AssertionError("Error: Your input path is not matched with any acceptable path");
 		}
-		
-		//Initialize the path field of the object
 		this.path = inputPath;
-		
 		//check if the file exists or not
 		File f = new File(inputPath);
 		if(f.exists()) {
@@ -49,7 +52,6 @@ public class Movie {
 		else {
 			this.status = Status.Invalid;
 		}
-		
 		//Initialize the info
 		this.title = inputTitle;
 		this.language = inputLanguage;
@@ -57,7 +59,7 @@ public class Movie {
 		this.custom = new HashMap<String, String>();
 	}
 	
-	//to Deeply Copy a movie object(copy the information object meanwhile)
+	//to Deeply Copy a movie object
 	public Movie(Movie m) {
 		this.path = m.path;
 		this.format = m.format;
@@ -68,16 +70,9 @@ public class Movie {
 		this.custom = new HashMap<String, String>(m.custom);
 	}
 	
+	//Easier for client to print out
 	public String toString() {
 		return this.title;
-	}
-	
-	public Status getValidity() {
-		return this.status;
-	}
-	
-	public Formats getFormat() {
-		return this.format;
 	}
 	
 	//Update the status of the movie, to check if the file exists or not
@@ -91,7 +86,23 @@ public class Movie {
 		}
 	}
 	
-	//Getters for the information
+	/*
+	 * Check if the two movies have same file, even though they are two object
+	 * Used in WatchList class and Library class
+	 * I assume that two Movies are same if they are refer to the same file
+	 */
+	public boolean ifSame(Movie m) {
+		return this.path.equals(m.path);
+	}
+	
+	//Getters for the fields
+	public Status getValidity() {
+		return this.status;
+	}
+	public Formats getFormat() {
+		return this.format;
+	}
+	//Getters for the required information
 	public String getTitle() {
 		return this.title;
 	}
@@ -101,6 +112,7 @@ public class Movie {
 	public String getStudio() {
 		return this.studio;
 	}
+	//Methods for modify the custom information
 	public void addPair(String key, String value) {
 		this.custom.put(key, value);
 	}
@@ -110,5 +122,6 @@ public class Movie {
 	public void modifyPair(String key, String changed) {
 		this.custom.replace(key, changed);
 	}
+
 	
 }
